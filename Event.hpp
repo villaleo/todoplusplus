@@ -6,10 +6,11 @@
 #define EVENT_HPP
 
 #include <string>
+#include <cassert>
 
 class Event {
 public:
-    Event () { isNull = true; }
+    Event () = default;
 
     Event (std::string name, std::string date):
         name (std::move (name)), date (std::move (date)) {}
@@ -20,17 +21,27 @@ public:
 
     [[nodiscard]] const std::string &getCategory () const {return category;}
 
-    void setName (const std::string &n_name) { Event::name = n_name; }
+    void setName (const std::string &n_name) {
+        assert(!n_name.empty());
+        Event::name = n_name;
+    }
 
-    void setDate (const std::string &n_date) { Event::date = n_date; }
+    void setDate (const std::string &n_date) {
+        assert(!n_date.empty());
+        Event::date = n_date;
+    }
 
-    void setCategory (const std::string &n_category) {Event::category = n_category;}
+    void setCategory (const std::string &n_category) {
+        assert(!n_category.empty());
+        Event::category = n_category;
+    }
 
-    [[nodiscard]] bool null () const { return isNull; }
+    [[nodiscard]] bool null () const {
+        return name.empty() || date.empty() || category.empty();
+    }
 
 private:
     std::string category, name, date;
-    bool isNull { false };
 };
 
 #endif //EVENT_HPP
