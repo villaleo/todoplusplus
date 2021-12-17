@@ -1,10 +1,9 @@
 #include <iostream>
 #include <cstdlib>
-#include <string>
-#include <array>
 #include <thread>
 #include <map>
 #include <utility>
+#include "Event.hpp"
 
 /*
  * [[name, date, category], [name, date, category], [name, date, category]]
@@ -12,31 +11,12 @@
  * [category] -> [name, date]
  */
 
-class InvalidEvent {
-public:
-    [[nodiscard]] virtual bool null () const = 0;
-
-protected:
-    bool isNull { false };
-};
-
-class Event : virtual public InvalidEvent {
-public:
-    Event () { isNull = true; }
-
-    Event (std::string name, std::string date):
-        name (std::move (name)), date (std::move (date)) {}
-
-    [[nodiscard]] bool null () const override { return isNull; }
-
-private:
-    std::string name, date;
-};
-
 void displayMenu ();
 
+void insertEvent(std::multimap<std::string, Event> &e);
+
 int main () {
-    std::string selection;
+    std::string selection, user_name, user_date, user_category;
 
     do {
         displayMenu ();
