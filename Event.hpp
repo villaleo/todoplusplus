@@ -9,6 +9,10 @@
 #include <cassert>
 #include <type_traits>
 
+/**
+ * Create an Event, consisting of a name and a date. A 'null' Event
+ * is defined to be an Event with either an empty name or date members.
+ */
 class Event {
 public:
     Event () = default;
@@ -16,10 +20,12 @@ public:
     Event (std::string name, std::string date):
         name (std::move (name)), date (std::move (date)) {}
 
+    // Accessors
     [[nodiscard]] const std::string &getName () const { return name; }
 
     [[nodiscard]] const std::string &getDate () const { return date; }
 
+    // Mutators
     void setName (const std::string &n_name) {
         assert(!n_name.empty ());
         Event::name = n_name;
@@ -30,10 +36,20 @@ public:
         Event::date = n_date;
     }
 
-    [[nodiscard]] bool null () const {
-        return name.empty () || date.empty ();
-    }
+    /**
+     * An Event is defined to be 'null' if either the name or date members
+     * are blank.
+     * @return If an event is 'null' (empty name or date).
+     */
+    [[nodiscard]] bool null () const { return name.empty () || date.empty (); }
 
+    /**
+     * An Event is equal to another Event iff the name and date are exactly
+     * the same.
+     * @param lhs The first Event.
+     * @param rhs The second Event.
+     * @return If the events' members are identical
+     */
     friend bool operator== (const Event &lhs, const Event &rhs) {
         return lhs.name == rhs.name && lhs.date == rhs.date;
     }
