@@ -7,6 +7,7 @@
 
 #include <string>
 #include <cassert>
+#include <type_traits>
 
 class Event {
 public:
