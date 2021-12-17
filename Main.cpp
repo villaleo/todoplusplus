@@ -1,31 +1,23 @@
+//
+// Created by Leonardo Villalobos on 12/16/21.
+//
+
 #include <iostream>
 #include <cstdlib>
-#include <thread>
 #include <map>
 #include <utility>
 #include <fstream>
-#include <set>
 #include "Event.hpp"
-
-void displayMenu ();
-
-bool taskCancelled (const std::string &str, const std::string &task);
-
-std::string &toLower (std::string &str);
-
-bool validFilename (const std::string &path);
-
-bool validPathname (const std::string &path);
-
-void displayHelp ();
+#include "Helpers.hpp"
 
 int main () {
-    const std::string YOUR_PROJECT_PATH("/Users/lvill/dev/Todoplusplus/");
+    const std::string YOUR_PROJECT_PATH ("/Users/lvill/dev/Todoplusplus/");
     std::string selection, user_name, user_date, user_category;
     std::multimap<std::string, Event> list;
 
+    displayMenu ();
     do {
-        displayMenu ();
+        std::cout << "** Enter selection.\n>> ";
         std::cin >> selection;
         selection = toLower (selection);
 
@@ -113,7 +105,7 @@ int main () {
             std::cout << " or leave blank to save to project directory.\n>> ";
             std::getline (std::cin, path);
 
-            if (path.empty())
+            if (path.empty ())
                 path = YOUR_PROJECT_PATH;
             else if (!validPathname (path)) {
                 std::cout << "\n*Error: Filename contains illegal characters.\n";
@@ -121,38 +113,38 @@ int main () {
             }
 
             std::cout << "Enter name for the file, or leave blank to save as \"todo.txt\".\n>> ";
-            std::getline(std::cin, filename);
+            std::getline (std::cin, filename);
 
-            if (filename.empty())
+            if (filename.empty ())
                 filename = "todo.txt";
-            else if (!validFilename(filename)) {
+            else if (!validFilename (filename)) {
                 std::cout << "\n*Error: Filename contains illegal characters.\n";
                 continue;
             }
 
             // Check if path ends correctly
-            if (path.back() != '/' || path.back() != '\\') {
-                if (std::find(path.begin(), path.end(), '/') != path.end())
+            if (path.back () != '/' || path.back () != '\\') {
+                if (std::find (path.begin (), path.end (), '/') != path.end ())
                     path += '/';
                 else
                     path += '\\';
             }
 
             // Check if file extension is correct
-            auto extension = std::find(filename.begin(), filename.end(), '.');
-            if (extension == filename.end())
+            auto extension = std::find (filename.begin (), filename.end (), '.');
+            if (extension == filename.end ())
                 filename += ".txt";
             else {
                 // Change extension
                 std::string newFilename;
-                for (auto i = filename.begin(); i != extension; i++)
+                for (auto i = filename.begin (); i != extension; i++)
                     newFilename += *i;
                 filename = newFilename + ".txt";
             }
 
             // Create output file
             std::ofstream outputFile (path + filename);
-            if (outputFile.fail()) {
+            if (outputFile.fail ()) {
                 std::cout << "\n*Error: Something went wrong.\n";
                 continue;
             }
@@ -161,72 +153,18 @@ int main () {
             for (const auto&[category, event]: list) {
                 outputFile << event.getName () << " (" << event.getDate () << ") : " << category << '\n';
             }
-            outputFile.close();
+            outputFile.close ();
         }
         else if (selection == "q") { // Quit program
             continue;
         }
         else if (selection == "h") { // Display help
-            displayHelp();
+            displayHelp ();
         }
         else { // Unknown action
-            //
+            std::cout << "Error: Unknown command. Press \'h\' for help.\n";
         }
     } while (selection != "q");
 
     return EXIT_SUCCESS;
-}
-
-void displayMenu () {
-    std::cout << "———————————————————————————\n[ins] - Insert an event    \n";
-    std::cout << "[rm]  - Remove an event    \n[vw]  - View events        \n";
-    std::cout << "[sv]  - Save list to a file\n[q]   - Quit the program   \n";
-    std::cout << "[h]   - Help               \n———————————————————————————\n";
-    std::cout << "** Enter selection.\n>> ";
-}
-
-bool validFilename (const std::string &path) {
-    std::set<char> illegal_chars {
-        '#', '%', '&', '{', '}', '\\',
-        '<', '>', '*', '?', '/', '$',
-        '!', '\'', '\"', ':', '@', '+',
-        '`', '|', '=', ' '
-    };
-    for (const char c: path) {
-        if (illegal_chars.find (c) != illegal_chars.end())
-            return false;
-    }
-    return true;
-}
-
-bool validPathname (const std::string &path) {
-    std::set<char> illegal_chars {
-        '#', '%', '&', '{', '}',
-        '<', '>', '*', '?', '$',
-        '!', '\'', '\"', ':', '@',
-        '`', '|', '=', '+', ' '
-    };
-    for (const char c: path) {
-        if (illegal_chars.find (c) != illegal_chars.end())
-            return false;
-    }
-    return true;
-}
-
-void displayHelp () {
-    //
-}
-
-bool taskCancelled (const std::string &str, const std::string &task) {
-    if (str.length () == 1 && str[0] == '$') {
-        std::cout << "\n* " << task << " cancelled.\n";
-        return true;
-    }
-    return false;
-};
-
-std::string &toLower (std::string &str) {
-    for (char &c: str)
-        c = static_cast<char>(std::tolower (c));
-    return str;
 }
