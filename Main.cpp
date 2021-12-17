@@ -1,7 +1,37 @@
 #include <iostream>
 #include <cstdlib>
 #include <string>
+#include <array>
 #include <thread>
+#include <map>
+#include <utility>
+
+/*
+ * [[name, date, category], [name, date, category], [name, date, category]]
+ * multimap?
+ * [category] -> [name, date]
+ */
+
+class InvalidEvent {
+public:
+    [[nodiscard]] virtual bool null () const = 0;
+
+protected:
+    bool isNull { false };
+};
+
+class Event : virtual public InvalidEvent {
+public:
+    Event () { isNull = true; }
+
+    Event (std::string name, std::string date):
+        name (std::move (name)), date (std::move (date)) {}
+
+    [[nodiscard]] bool null () const override { return isNull; }
+
+private:
+    std::string name, date;
+};
 
 void displayMenu ();
 
