@@ -19,29 +19,26 @@ public:
 
     [[nodiscard]] const std::string &getDate () const { return date; }
 
-    [[nodiscard]] const std::string &getCategory () const {return category;}
-
     void setName (const std::string &n_name) {
-        assert(!n_name.empty());
+        assert(!n_name.empty ());
         Event::name = n_name;
     }
 
     void setDate (const std::string &n_date) {
-        assert(!n_date.empty());
+        assert(!n_date.empty ());
         Event::date = n_date;
     }
 
-    void setCategory (const std::string &n_category) {
-        assert(!n_category.empty());
-        Event::category = n_category;
+    [[nodiscard]] bool null () const {
+        return name.empty () || date.empty ();
     }
 
-    [[nodiscard]] bool null () const {
-        return name.empty() || date.empty() || category.empty();
+    friend bool operator== (const Event &lhs, const Event &rhs) {
+        return lhs.name == rhs.name && lhs.date == rhs.date;
     }
 
 private:
-    std::string category, name, date;
+    std::string name, date;
 };
 
 #endif //EVENT_HPP
