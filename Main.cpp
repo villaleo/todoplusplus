@@ -7,6 +7,7 @@
 #include <map>
 #include <utility>
 #include <fstream>
+#include <vector>
 #include "Event.hpp"
 #include "Helpers.hpp"
 
@@ -82,6 +83,11 @@ int main () {
             std::cin.ignore ();
             std::getline (std::cin, user_category);
             if (taskCancelled (user_category, "View")) continue;
+
+            if (list.find (user_category) == list.end ()) {
+                log ("Error: No matching category found.", 'e');
+                continue;
+            }
 
             auto[begin, end] = list.equal_range (user_category);
             if (begin == list.end ()) {
@@ -175,11 +181,52 @@ int main () {
             // Read from file
             std::ifstream inputFile (filepath + filename);
 
-            // TODO: Clear current list
-            // TODO: Manage contents in file
-            // TODO: Add file contents to current list
+            // Clear current list
+            list.clear ();
 
+            // Manage contents in file
+            std::vector<std::string> entries;
+            std::string temp;
+
+            if (inputFile.fail ()) {
+                log ("Error: Something went wrong.", 'e');
+                continue;
+            }
+
+            while (std::getline (inputFile, temp))
+                entries.push_back (temp);
             inputFile.close ();
+
+            if (entries.empty ()) {
+                log ("Error: Nothing to insert.", 'e');
+                continue;
+            }
+
+            // Add file contents to current list
+            for (auto &entry: entries) {
+                auto first = std::find (entry.begin (), entry.end (), '(');
+                auto second = std::find (entry.begin (), entry.end (), ')');
+                auto colon = std::find (entry.begin (), entry.end (), ':');
+
+                user_date = entry.substr (
+                    std::distance (entry.begin (), ++first),
+                    std::distance (first, second)
+                );
+                user_name = entry.substr (
+                    0,
+                    std::distance (entry.begin (), -- --first)
+                );
+                user_category = entry.substr (
+                    std::distance (entry.begin (), ++ ++colon)
+                );
+
+                list.insert (
+                    {
+                        user_category,
+                        Event (user_name, user_date)
+                    }
+                );
+            }
             log ("Contents loaded from file successfully!", 's');
         }
         else if (selection == "q") { // Quit program
