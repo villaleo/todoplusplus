@@ -20,6 +20,7 @@ int main () {
         std::cout << "** Enter selection.\n>> ";
         std::cin >> selection;
         selection = toLower (selection);
+        trimRight (selection);
 
         if (selection == "ins") { // Insert event
             std::cout << "[$]   - Cancel\n>> Event name: ";
@@ -100,7 +101,7 @@ int main () {
         }
         else if (selection == "sv") { // Save events
             if (list.empty ()) {
-                log("Error: List is empty, nothing to save.", 'e');
+                log ("Error: List is empty, nothing to save.", 'e');
                 continue;
             }
             std::string path, filename;
@@ -112,7 +113,7 @@ int main () {
             if (path.empty ())
                 path = PROJECT_PATH;
             else if (!validPathname (path)) {
-                log("Error: Filename contains illegal characters.", 'e');
+                log ("Error: Filename contains illegal characters.", 'e');
                 continue;
             }
 
@@ -122,7 +123,7 @@ int main () {
             if (filename.empty ())
                 filename = "todo.txt";
             else if (!validFilename (filename)) {
-                log("Error: Filename contains illegal characters.", 'e');
+                log ("Error: Filename contains illegal characters.", 'e');
                 continue;
             }
 
@@ -145,26 +146,26 @@ int main () {
             // Create output file
             std::ofstream outputFile (path + filename);
             if (outputFile.fail ()) {
-                log("Error: Something went wrong.", 'e');
+                log ("Error: Something went wrong.", 'e');
                 continue;
             }
 
             // Write the events from the list
-            for (const auto&[category, event]: list) {
+            for (const auto&[category, event]: list)
                 outputFile << event.getName () << " (" << event.getDate () << ") : " << category << '\n';
-            }
+
             outputFile.close ();
-            log("File insertion successful.", 's');
+            log ("File insertion successful.", 's');
         }
         else if (selection == "q") { // Quit program
-            log("Terminating...", 'w');
+            log ("Terminating...", 'w');
             continue;
         }
         else if (selection == "h") { // Display help
             displayHelp ();
         }
         else { // Unknown action
-            log("Error: Unknown command. Press \'h\' for help.", 'e');
+            log ("Error: Unknown command. Press \'h\' for help.", 'e');
         }
     } while (selection != "q");
 

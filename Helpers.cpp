@@ -73,3 +73,12 @@ void log (const std::string &msg, char type) {
     else
         std::cout << "\n* " << msg << '\n';
 }
+
+void trimRight (std::string &str) {
+    str.erase (
+        std::find_if (
+            str.rbegin (), str.rend (), [] (unsigned char c) {
+                return !std::isspace (c);
+            }
+        ).base (), str.end ());
+}

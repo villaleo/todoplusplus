@@ -10,6 +10,8 @@
 #include <iostream>
 #include <set>
 #include <algorithm>
+#include <cctype>
+#include <locale>
 
 /**
  * Display menu with options and brief summaries.
@@ -50,7 +52,18 @@ bool validPathname (const std::string &path);
  */
 void displayHelp ();
 
+/**
+ * Display a colored message to the console.
+ * @param msg The message to be displayed.
+ * @param type The type of message to display.
+ */
 void log (const std::string &msg, char type);
+
+/**
+ * Trim the whitespace from the right of a string (inplace).
+ * @param str The input buffer.
+ */
+void trimRight(std::string &str);
 
 struct Color {
     constexpr static auto RED = "\033[0;31m";
