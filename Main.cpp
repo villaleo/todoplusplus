@@ -104,15 +104,15 @@ int main () {
                 log ("Error: List is empty, nothing to save.", 'e');
                 continue;
             }
-            std::string path, filename;
+            std::string pathname, filename;
             std::cin.ignore ();
-            std::cout << "Enter the path to where to save the file to,";
+            std::cout << "Enter the pathname to where to save the file to,";
             std::cout << " or leave blank to save to project directory.\n>> ";
-            std::getline (std::cin, path);
+            std::getline (std::cin, pathname);
 
-            if (path.empty ())
-                path = PROJECT_PATH;
-            else if (!validPathname (path)) {
+            if (pathname.empty ())
+                pathname = PROJECT_PATH;
+            else if (!validPathname (pathname)) {
                 log ("Error: Filename contains illegal characters.", 'e');
                 continue;
             }
@@ -127,24 +127,11 @@ int main () {
                 continue;
             }
 
-            // Check if path ends correctly
-            if (path.back () != '/' || path.back () != '\\')
-                path += (std::find (path.begin (), path.end (), '/') != path.end ()) ? '/' : '\\';
-
-            // Check if file extension is correct
-            auto extension = std::find (filename.begin (), filename.end (), '.');
-            if (extension == filename.end ())
-                filename += ".txt";
-            else {
-                // Change extension
-                std::string newFilename;
-                for (auto i = filename.begin (); i != extension; i++)
-                    newFilename += *i;
-                filename = newFilename + ".txt";
-            }
+            // Make sure file name and pathname are in the correct format
+            formatDirectory (filename, pathname);
 
             // Create output file
-            std::ofstream outputFile (path + filename);
+            std::ofstream outputFile (pathname + filename);
             if (outputFile.fail ()) {
                 log ("Error: Something went wrong.", 'e');
                 continue;
@@ -156,6 +143,44 @@ int main () {
 
             outputFile.close ();
             log ("File insertion successful.", 's');
+        }
+        else if (selection == "op") { // Open existing file
+            std::string filepath, filename;
+            std::cin.ignore ();
+            std::cout << "Enter the path of the file. If using project directory, leave blank.\n";
+            std::getline (std::cin, filepath);
+
+            // Handle path name
+            if (filepath.empty ())
+                filepath = PROJECT_PATH;
+            else if (!validPathname (filepath)) {
+                log ("Error: Filename contains illegal characters.", 'e');
+                continue;
+            }
+
+            std::cout << "Enter the name of the file. If using default name \"todo.txt\", leave blank.\n";
+            std::getline (std::cin, filename);
+
+            // Handle file name
+            if (filename.empty ())
+                filename = "todo.txt";
+            else if (!validFilename (filename)) {
+                log ("Error: Filename contains illegal characters.", 'e');
+                continue;
+            }
+
+            // Make sure file name and path are in the correct format
+            formatDirectory (filename, filepath);
+
+            // Read from file
+            std::ifstream inputFile (filepath + filename);
+
+            // TODO: Clear current list
+            // TODO: Manage contents in file
+            // TODO: Add file contents to current list
+
+            inputFile.close ();
+            log ("Contents loaded from file successfully!", 's');
         }
         else if (selection == "q") { // Quit program
             log ("Terminating...", 'w');

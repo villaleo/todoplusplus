@@ -63,7 +63,14 @@ void log (const std::string &msg, char type);
  * Trim the whitespace from the right of a string (inplace).
  * @param str The input buffer.
  */
-void trimRight(std::string &str);
+void trimRight (std::string &str);
+
+/**
+ * Asserts that a file path and name are in the correct format.
+ * @param filename The name of the file.
+ * @param pathname The path of the file.
+ */
+void formatDirectory (std::string &filename, std::string &pathname);
 
 struct Color {
     constexpr static auto RED = "\033[0;31m";
