@@ -11,7 +11,7 @@
 #include "Helpers.hpp"
 
 int main () {
-    const std::string YOUR_PROJECT_PATH ("/Users/lvill/dev/Todoplusplus/");
+    const std::string PROJECT_PATH ("/Users/lvill/dev/Todoplusplus/");
     std::string selection, user_name, user_date, user_category;
     std::multimap<std::string, Event> list;
 
@@ -38,10 +38,10 @@ int main () {
             auto event = Event (user_name, user_date);
             if (!event.null ()) {
                 list.insert ({ user_category, event });
-                std::cout << "\n* Event insertion successfully.\n";
+                log ("Event insertion successfully.", 's');
             }
             else
-                std::cout << "\n* Error: Invalid event details specified.\n";
+                log ("Error: Invalid event details specified.", 'e');
         }
         else if (selection == "rm") { // Remove event
             bool removed = false;
@@ -61,7 +61,7 @@ int main () {
 
             auto event = Event (user_name, user_date);
             if (event.null ()) {
-                std::cout << "\n* Error: Invalid event details specified.\n";
+                log ("Error: Invalid event details specified.", 'e');
                 continue;
             }
 
@@ -70,11 +70,11 @@ int main () {
                 if (i->second == event) {
                     list.erase (i);
                     removed = true;
-                    std::cout << "\n* Event removal successful.\n";
+                    log ("Event removal successful.", 's');
                     break;
                 }
             }
-            if (!removed) std::cout << "\n* Event not erased. No such event exists.\n";
+            if (!removed) log ("Error: No such event exists.", 'e');
         }
         else if (selection == "vw") { // View events
             std::cout << "[$]   - Cancel\n>> Event category: ";
@@ -84,19 +84,23 @@ int main () {
 
             auto[begin, end] = list.equal_range (user_category);
             if (begin == list.end ()) {
-                std::cout << "\n* Nothing to display.\n";
+                log ("Error: List is empty, nothing to display.", 'e');
                 continue;
             }
 
             std::cout << "———————————————————————————\n";
-            for (auto i = begin; i != end; i++)
+            std::string buffer;
+            for (auto i = begin; i != end; i++) {
                 std::cout << i->second
-                    .getName () << " (" << i->second
-                    .getDate () << ") : " << i->first << '\n';
+                                 .getName () + " (";
+                std::cout << i->second
+                                 .getDate () + ")\n";
+            }
+            std::cout << "———————————————————————————\n";
         }
         else if (selection == "sv") { // Save events
             if (list.empty ()) {
-                std::cout << "\n* Nothing to save.\n";
+                log("Error: List is empty, nothing to save.", 'e');
                 continue;
             }
             std::string path, filename;
@@ -106,9 +110,9 @@ int main () {
             std::getline (std::cin, path);
 
             if (path.empty ())
-                path = YOUR_PROJECT_PATH;
+                path = PROJECT_PATH;
             else if (!validPathname (path)) {
-                std::cout << "\n*Error: Filename contains illegal characters.\n";
+                log("Error: Filename contains illegal characters.", 'e');
                 continue;
             }
 
@@ -118,17 +122,13 @@ int main () {
             if (filename.empty ())
                 filename = "todo.txt";
             else if (!validFilename (filename)) {
-                std::cout << "\n*Error: Filename contains illegal characters.\n";
+                log("Error: Filename contains illegal characters.", 'e');
                 continue;
             }
 
             // Check if path ends correctly
-            if (path.back () != '/' || path.back () != '\\') {
-                if (std::find (path.begin (), path.end (), '/') != path.end ())
-                    path += '/';
-                else
-                    path += '\\';
-            }
+            if (path.back () != '/' || path.back () != '\\')
+                path += (std::find (path.begin (), path.end (), '/') != path.end ()) ? '/' : '\\';
 
             // Check if file extension is correct
             auto extension = std::find (filename.begin (), filename.end (), '.');
@@ -145,7 +145,7 @@ int main () {
             // Create output file
             std::ofstream outputFile (path + filename);
             if (outputFile.fail ()) {
-                std::cout << "\n*Error: Something went wrong.\n";
+                log("Error: Something went wrong.", 'e');
                 continue;
             }
 
@@ -154,15 +154,17 @@ int main () {
                 outputFile << event.getName () << " (" << event.getDate () << ") : " << category << '\n';
             }
             outputFile.close ();
+            log("File insertion successful.", 's');
         }
         else if (selection == "q") { // Quit program
+            log("Terminating...", 'w');
             continue;
         }
         else if (selection == "h") { // Display help
             displayHelp ();
         }
         else { // Unknown action
-            std::cout << "Error: Unknown command. Press \'h\' for help.\n";
+            log("Error: Unknown command. Press \'h\' for help.", 'e');
         }
     } while (selection != "q");
 

@@ -49,7 +49,8 @@ void displayHelp () {
 
 bool taskCancelled (const std::string &str, const std::string &task) {
     if (str.length () == 1 && str[0] == '$') {
-        std::cout << "\n* " << task << " cancelled.\n";
+        std::string message = task + " cancelled.";
+        log (message, 'w');
         return true;
     }
     return false;
@@ -57,6 +58,18 @@ bool taskCancelled (const std::string &str, const std::string &task) {
 
 std::string &toLower (std::string &str) {
     for (char &c: str)
-        c = static_cast<char>(std::tolower (c));
+        c = static_cast<char> (std::tolower (c));
     return str;
+}
+
+void log (const std::string &msg, char type) {
+    type = static_cast<char> (std::tolower (type));
+    if (type == 'w')
+        std::cout << "\n* " << Color::YELLOW << msg << Color::RESET << '\n';
+    else if (type == 'e')
+        std::cout << "\n* " << Color::RED << msg << Color::RESET << '\n';
+    else if (type == 's')
+        std::cout << "\n* " << Color::GREEN << msg << Color::RESET << '\n';
+    else
+        std::cout << "\n* " << msg << '\n';
 }

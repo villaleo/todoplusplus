@@ -50,4 +50,13 @@ bool validPathname (const std::string &path);
  */
 void displayHelp ();
 
+void log (const std::string &msg, char type);
+
+struct Color {
+    constexpr static auto RED = "\033[0;31m";
+    constexpr static auto GREEN = "\033[1;32m";
+    constexpr static auto RESET = "\033[0m";
+    constexpr static auto YELLOW = "\033[1;33m";
+};
+
 #endif //HELPERS_HPP
