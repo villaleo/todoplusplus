@@ -144,17 +144,26 @@ int main () {
             }
 
             // Write the events from the list
-            for (const auto&[category, event]: list)
-                outputFile << event.getName () << " (" << event.getDate () << ") : " << category << '\n';
+            // Format is cat=... => event=... (date=...)
+            for (const auto&[category, event]: list) {
+                outputFile << "cat=" << category << " => event=" << event.getName ();
+                outputFile << " (date=" << event.getDate () << ")\n";
+            }
 
             outputFile.close ();
             log ("File insertion successful.", 's');
         }
         else if (selection == "op") { // Open existing file
+            std::cout << "[$]   - Cancel\n>> Event category: ";
+
             std::string filepath, filename;
+            bool format_error { false };
+
             std::cin.ignore ();
-            std::cout << "Enter the path of the file. If using project directory, leave blank.\n";
+            std::cout << "Enter file path. Leave blank if using project directory.\n>> ";
             std::getline (std::cin, filepath);
+
+            if (taskCancelled (filepath, "Open file")) continue;
 
             // Handle path name
             if (filepath.empty ())
@@ -164,7 +173,7 @@ int main () {
                 continue;
             }
 
-            std::cout << "Enter the name of the file. If using default name \"todo.txt\", leave blank.\n";
+            std::cout << "Enter file name. Leave blank if using default name \"todo.txt\".\n>> ";
             std::getline (std::cin, filename);
 
             // Handle file name
@@ -203,23 +212,38 @@ int main () {
             }
 
             // Add file contents to current list
-            for (auto &entry: entries) {
-                auto first = std::find (entry.begin (), entry.end (), '(');
-                auto second = std::find (entry.begin (), entry.end (), ')');
-                auto colon = std::find (entry.begin (), entry.end (), ':');
+            for (const auto &entry: entries) {
+                // Literals found in the file
+                std::string event = "event=", date = "date=", category = "cat=";
 
-                user_date = entry.substr (
-                    std::distance (entry.begin (), ++first),
-                    std::distance (first, second)
+                // Locate the literals
+                size_t cat_start = entry.find (category);
+                size_t event_start = entry.find (event);
+                size_t date_start = entry.find (date);
+
+                // If not found
+                constexpr auto nil = std::string::npos;
+                if (cat_start == nil || event_start == nil || date_start == nil) {
+                    format_error = true;
+                    break;
+                }
+
+                // Extract and store into user variables
+                user_category = entry.substr (
+                    category.length (),
+                    event_start - category.length () - 4
                 );
                 user_name = entry.substr (
-                    0,
-                    std::distance (entry.begin (), -- --first)
+                    event_start + event.length (),
+                    date_start - cat_start - event_start - date.length () - 3
                 );
-                user_category = entry.substr (
-                    std::distance (entry.begin (), ++ ++colon)
+                user_date = entry.substr (
+                    date_start + date.length (),
+                    entry.substr (date_start + date.length ())
+                        .length () - 1
                 );
 
+                // Insert into list
                 list.insert (
                     {
                         user_category,
@@ -227,7 +251,10 @@ int main () {
                     }
                 );
             }
-            log ("Contents loaded from file successfully!", 's');
+            if (format_error)
+                log ("Error: File format is invalid.", 'e');
+            else
+                log ("Contents loaded from file successfully!", 's');
         }
         else if (selection == "q") { // Quit program
             log ("Terminating...", 'w');
