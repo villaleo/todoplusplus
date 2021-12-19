@@ -7,6 +7,7 @@
 #include <map>
 #include <utility>
 #include <fstream>
+#include <vector>
 #include "Event.hpp"
 #include "Helpers.hpp"
 
@@ -83,6 +84,11 @@ int main () {
             std::getline (std::cin, user_category);
             if (taskCancelled (user_category, "View")) continue;
 
+            if (list.find (user_category) == list.end ()) {
+                log ("Error: No matching category found.", 'e');
+                continue;
+            }
+
             auto[begin, end] = list.equal_range (user_category);
             if (begin == list.end ()) {
                 log ("Error: List is empty, nothing to display.", 'e');
@@ -104,15 +110,15 @@ int main () {
                 log ("Error: List is empty, nothing to save.", 'e');
                 continue;
             }
-            std::string path, filename;
+            std::string pathname, filename;
             std::cin.ignore ();
-            std::cout << "Enter the path to where to save the file to,";
+            std::cout << "Enter the pathname to where to save the file to,";
             std::cout << " or leave blank to save to project directory.\n>> ";
-            std::getline (std::cin, path);
+            std::getline (std::cin, pathname);
 
-            if (path.empty ())
-                path = PROJECT_PATH;
-            else if (!validPathname (path)) {
+            if (pathname.empty ())
+                pathname = PROJECT_PATH;
+            else if (!validPathname (pathname)) {
                 log ("Error: Filename contains illegal characters.", 'e');
                 continue;
             }
@@ -127,35 +133,128 @@ int main () {
                 continue;
             }
 
-            // Check if path ends correctly
-            if (path.back () != '/' || path.back () != '\\')
-                path += (std::find (path.begin (), path.end (), '/') != path.end ()) ? '/' : '\\';
-
-            // Check if file extension is correct
-            auto extension = std::find (filename.begin (), filename.end (), '.');
-            if (extension == filename.end ())
-                filename += ".txt";
-            else {
-                // Change extension
-                std::string newFilename;
-                for (auto i = filename.begin (); i != extension; i++)
-                    newFilename += *i;
-                filename = newFilename + ".txt";
-            }
+            // Make sure file name and pathname are in the correct format
+            formatDirectory (filename, pathname);
 
             // Create output file
-            std::ofstream outputFile (path + filename);
+            std::ofstream outputFile (pathname + filename);
             if (outputFile.fail ()) {
                 log ("Error: Something went wrong.", 'e');
                 continue;
             }
 
             // Write the events from the list
-            for (const auto&[category, event]: list)
-                outputFile << event.getName () << " (" << event.getDate () << ") : " << category << '\n';
+            // Format is cat=... => event=... (date=...)
+            for (const auto&[category, event]: list) {
+                outputFile << "cat=" << category << " => event=" << event.getName ();
+                outputFile << " (date=" << event.getDate () << ")\n";
+            }
 
             outputFile.close ();
             log ("File insertion successful.", 's');
+        }
+        else if (selection == "op") { // Open existing file
+            std::cout << "[$]   - Cancel\n>> Event category: ";
+
+            std::string filepath, filename;
+            bool format_error { false };
+
+            std::cin.ignore ();
+            std::cout << "Enter file path. Leave blank if using project directory.\n>> ";
+            std::getline (std::cin, filepath);
+
+            if (taskCancelled (filepath, "Open file")) continue;
+
+            // Handle path name
+            if (filepath.empty ())
+                filepath = PROJECT_PATH;
+            else if (!validPathname (filepath)) {
+                log ("Error: Filename contains illegal characters.", 'e');
+                continue;
+            }
+
+            std::cout << "Enter file name. Leave blank if using default name \"todo.txt\".\n>> ";
+            std::getline (std::cin, filename);
+
+            // Handle file name
+            if (filename.empty ())
+                filename = "todo.txt";
+            else if (!validFilename (filename)) {
+                log ("Error: Filename contains illegal characters.", 'e');
+                continue;
+            }
+
+            // Make sure file name and path are in the correct format
+            formatDirectory (filename, filepath);
+
+            // Read from file
+            std::ifstream inputFile (filepath + filename);
+
+            // Clear current list
+            list.clear ();
+
+            // Manage contents in file
+            std::vector<std::string> entries;
+            std::string temp;
+
+            if (inputFile.fail ()) {
+                log ("Error: Something went wrong.", 'e');
+                continue;
+            }
+
+            while (std::getline (inputFile, temp))
+                entries.push_back (temp);
+            inputFile.close ();
+
+            if (entries.empty ()) {
+                log ("Error: Nothing to insert.", 'e');
+                continue;
+            }
+
+            // Add file contents to current list
+            for (const auto &entry: entries) {
+                // Literals found in the file
+                std::string event = "event=", date = "date=", category = "cat=";
+
+                // Locate the literals
+                size_t cat_start = entry.find (category);
+                size_t event_start = entry.find (event);
+                size_t date_start = entry.find (date);
+
+                // If not found
+                constexpr auto nil = std::string::npos;
+                if (cat_start == nil || event_start == nil || date_start == nil) {
+                    format_error = true;
+                    break;
+                }
+
+                // Extract and store into user variables
+                user_category = entry.substr (
+                    category.length (),
+                    event_start - category.length () - 4
+                );
+                user_name = entry.substr (
+                    event_start + event.length (),
+                    date_start - cat_start - event_start - date.length () - 3
+                );
+                user_date = entry.substr (
+                    date_start + date.length (),
+                    entry.substr (date_start + date.length ())
+                        .length () - 1
+                );
+
+                // Insert into list
+                list.insert (
+                    {
+                        user_category,
+                        Event (user_name, user_date)
+                    }
+                );
+            }
+            if (format_error)
+                log ("Error: File format is invalid.", 'e');
+            else
+                log ("Contents loaded from file successfully!", 's');
         }
         else if (selection == "q") { // Quit program
             log ("Terminating...", 'w');

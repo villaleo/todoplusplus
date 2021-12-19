@@ -7,8 +7,9 @@
 void displayMenu () {
     std::cout << "———————————————————————————\n[ins] - Insert an event    \n";
     std::cout << "[rm]  - Remove an event    \n[vw]  - View events        \n";
-    std::cout << "[sv]  - Save list to a file\n[q]   - Quit the program   \n";
-    std::cout << "[h]   - Help               \n———————————————————————————\n";
+    std::cout << "[sv]  - Save list to a file\n[op]  - Open existing file \n";
+    std::cout << "[q]   - Quit the program   \n[h]   - Help               \n";
+    std::cout << "———————————————————————————\n";
 }
 
 bool validFilename (const std::string &path) {
@@ -81,4 +82,22 @@ void trimRight (std::string &str) {
                 return !std::isspace (c);
             }
         ).base (), str.end ());
+}
+
+void formatDirectory (std::string &filename, std::string &pathname) {
+    // Check if path ends correctly
+    if (pathname.back () != '/' || pathname.back () != '\\')
+        pathname += (std::find (pathname.begin (), pathname.end (), '/') != pathname.end ()) ? '/' : '\\';
+
+    // Check if file extension is correct
+    auto extension = std::find (filename.begin (), filename.end (), '.');
+    if (extension == filename.end ())
+        filename += ".txt";
+    else {
+        // Change extension
+        std::string newFilename;
+        for (auto i = filename.begin (); i != extension; i++)
+            newFilename += *i;
+        filename = newFilename + ".txt";
+    }
 }
