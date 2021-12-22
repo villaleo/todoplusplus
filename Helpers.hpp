@@ -13,6 +13,8 @@
 #include <cctype>
 #include <locale>
 
+constexpr auto nil = std::string::npos;
+
 /**
  * Display menu with options and brief summaries.
  */
@@ -60,7 +62,7 @@ void displayHelp ();
 void log (const std::string &msg, char type);
 
 /**
- * Trim the whitespace from the right of a string (inplace).
+ * Trim the whitespace from the right of a string (in-place).
  * @param str The input buffer.
  */
 void trimRight (std::string &str);
@@ -72,6 +74,9 @@ void trimRight (std::string &str);
  */
 void formatDirectory (std::string &filename, std::string &pathname);
 
+/**
+ * A structure to hold constant expressions for color codes.
+ */
 struct Color {
     constexpr static auto RED = "\033[0;31m";
     constexpr static auto GREEN = "\033[1;32m";

@@ -18,23 +18,26 @@ int main () {
 
     displayMenu ();
     do {
-        std::cout << "** Enter selection.\n>> ";
+        std::cout << "Enter selection.\n>> ";
         std::cin >> selection;
+        std::cin.ignore ();
         selection = toLower (selection);
         trimRight (selection);
 
-        if (selection == "ins") { // Insert event
+        if (selection == "ins") { // insert
             std::cout << "[$]   - Cancel\n>> Event name: ";
-            std::cin.ignore ();
             std::getline (std::cin, user_name);
+
             if (taskCancelled (user_name, "Insert")) continue;
 
             std::cout << ">> Event date: ";
             std::getline (std::cin, user_date);
+
             if (taskCancelled (user_date, "Insert")) continue;
 
             std::cout << ">> Event category: ";
             std::getline (std::cin, user_category);
+
             if (taskCancelled (user_category, "Insert")) continue;
 
             auto event = Event (user_name, user_date);
@@ -47,83 +50,150 @@ int main () {
         }
         else if (selection == "rm") { // Remove event
             bool removed = false;
+            std::string input_buffer;
 
-            std::cout << "[$]   - Cancel\n>> Event name: ";
-            std::cin.ignore ();
-            std::getline (std::cin, user_name);
-            if (taskCancelled (user_name, "Remove")) continue;
+            std::cout << "———————————————————————————\n";
+            std::cout << "[a]  - Remove by specific details\n";
+            std::cout << "[n]  - Remove by name\n";
+            std::cout << "[k]  - Clear list\n";
+            std::cout << "[c]  - Cancel\n";
+            std::cout << "———————————————————————————\n>> ";
 
-            std::cout << ">> Event date: ";
-            std::getline (std::cin, user_date);
-            if (taskCancelled (user_date, "Remove")) continue;
+            std::getline (std::cin, input_buffer);
 
-            std::cout << ">> Event category: ";
-            std::getline (std::cin, user_category);
-            if (taskCancelled (user_category, "Remove")) continue;
+            if (taskCancelled (input_buffer, "Remove")) continue;
 
-            auto event = Event (user_name, user_date);
-            if (event.null ()) {
-                log ("Error: Invalid event details specified.", 'e');
+            if (input_buffer == "a") { // Remove by specific details
+                std::cout << ">> Event name: ";
+                std::getline (std::cin, user_name);
+                std::cout << ">> Event date: ";
+                std::getline (std::cin, user_date);
+                std::cout << ">> Event category: ";
+                std::getline (std::cin, user_category);
+
+                auto event = Event (user_name, user_date);
+                if (event.null ()) {
+                    log ("Error: Invalid event details specified.", 'e');
+                    continue;
+                }
+
+                auto[begin, end] = list.equal_range (user_category);
+                for (auto i = begin; i != end; i++) {
+                    if (i->second == event) {
+                        list.erase (i);
+                        removed = true;
+                        log ("Event removal successful.", 's');
+                        break;
+                    }
+                }
+            }
+            else if (input_buffer == "n") { // Remove by name
+                std::string name;
+                std::cout << ">> Event name: ";
+
+                std::getline (std::cin, name);
+
+                if (name.empty ()) {
+                    log ("Error: Invalid event details specified.", 'e');
+                    continue;
+                }
+
+                for (auto it = list.begin (); it != list.end (); it++) {
+                    if (it->second
+                            .getName () == name) {
+                        list.erase (it);
+                        removed = true;
+                        log ("Event removal successful.", 's');
+                        break;
+                    }
+                }
+            }
+            else if (input_buffer == "k") { // Clear list
+                list.clear ();
+                removed = true;
+                log ("List cleared.", 's');
+            }
+            else if (input_buffer == "c") { // Cancel
+                log ("Remove cancelled.", 'w');
                 continue;
             }
 
-            auto[begin, end] = list.equal_range (user_category);
-            for (auto i = begin; i != end; i++) {
-                if (i->second == event) {
-                    list.erase (i);
-                    removed = true;
-                    log ("Event removal successful.", 's');
-                    break;
-                }
-            }
             if (!removed) log ("Error: No such event exists.", 'e');
         }
         else if (selection == "vw") { // View events
-            std::cout << "[$]   - Cancel\n>> Event category: ";
-            std::cin.ignore ();
-            std::getline (std::cin, user_category);
+            std::cout << "———————————————————————————\n";
+            std::cout << "[a]  - View all events\n";
+            std::cout << "[c]  - View by category\n";
+            std::cout << "[$]   - Cancel\n";
+            std::cout << "———————————————————————————\n";
+
+            std::string choice;
+            std::getline (std::cin, choice);
+
             if (taskCancelled (user_category, "View")) continue;
 
-            if (list.find (user_category) == list.end ()) {
-                log ("Error: No matching category found.", 'e');
-                continue;
+            else if (choice == "a") {
+                if (list.empty ()) {
+                    log ("List is empty.", 'w');
+                    continue;
+                }
+
+                std::cout << "———————————————————————————\n";
+                for (const auto &i: list) {
+                    std::cout << i.second
+                        .getName () << " (" << i.second
+                        .getDate () << ")\n";
+                }
+                std::cout << "———————————————————————————\n";
+            }
+            else if (choice == "c") {
+                std::cout << ">> Category: ";
+                std::getline (std::cin, user_category);
+
+                if (list.find (user_category) == list.end ()) {
+                    log ("Error: No matching category found.", 'e');
+                    continue;
+                }
+
+                auto[begin, end] = list.equal_range (user_category);
+                if (begin == list.end ()) {
+                    log ("Error: List is empty, nothing to display.", 'e');
+                    continue;
+                }
+
+                std::cout << "———————————————————————————\n";
+                std::string buffer;
+                for (auto i = begin; i != end; i++) {
+                    std::cout << i->second
+                                     .getName () + " (";
+                    std::cout << i->second
+                                     .getDate () + ")\n";
+                }
+                std::cout << "———————————————————————————\n";
             }
 
-            auto[begin, end] = list.equal_range (user_category);
-            if (begin == list.end ()) {
-                log ("Error: List is empty, nothing to display.", 'e');
-                continue;
-            }
-
-            std::cout << "———————————————————————————\n";
-            std::string buffer;
-            for (auto i = begin; i != end; i++) {
-                std::cout << i->second
-                                 .getName () + " (";
-                std::cout << i->second
-                                 .getDate () + ")\n";
-            }
-            std::cout << "———————————————————————————\n";
         }
         else if (selection == "sv") { // Save events
-            if (list.empty ()) {
-                log ("Error: List is empty, nothing to save.", 'e');
-                continue;
-            }
-            std::string pathname, filename;
-            std::cin.ignore ();
-            std::cout << "Enter the pathname to where to save the file to,";
-            std::cout << " or leave blank to save to project directory.\n>> ";
+            std::string choice, pathname, filename;
+
+            std::cout << "———————————————————————————\n";
+            std::cout << "[$]   - Cancel\n";
+            std::cout << "———————————————————————————\n>> ";
+            std::getline (std::cin, choice);
+
+            if (taskCancelled (choice, "Save")) continue;
+
+            std::cout << "Enter pathname. If project directory, enter '.':\n>> ";
             std::getline (std::cin, pathname);
 
-            if (pathname.empty ())
+            if (pathname.size () == 1 && pathname[0] == '.')
                 pathname = PROJECT_PATH;
             else if (!validPathname (pathname)) {
                 log ("Error: Filename contains illegal characters.", 'e');
                 continue;
             }
 
-            std::cout << "Enter name for the file, or leave blank to save as \"todo.txt\".\n>> ";
+            std::cout << "Enter filename or leave empty for default name, \"todo.txt\".\n>> ";
             std::getline (std::cin, filename);
 
             if (filename.empty ())
@@ -133,18 +203,14 @@ int main () {
                 continue;
             }
 
-            // Make sure file name and pathname are in the correct format
             formatDirectory (filename, pathname);
 
-            // Create output file
             std::ofstream outputFile (pathname + filename);
             if (outputFile.fail ()) {
                 log ("Error: Something went wrong.", 'e');
                 continue;
             }
 
-            // Write the events from the list
-            // Format is cat=... => event=... (date=...)
             for (const auto&[category, event]: list) {
                 outputFile << "cat=" << category << " => event=" << event.getName ();
                 outputFile << " (date=" << event.getDate () << ")\n";
@@ -154,19 +220,18 @@ int main () {
             log ("File insertion successful.", 's');
         }
         else if (selection == "op") { // Open existing file
-            std::cout << "[$]   - Cancel\n>> Event category: ";
-
             std::string filepath, filename;
             bool format_error { false };
 
-            std::cin.ignore ();
-            std::cout << "Enter file path. Leave blank if using project directory.\n>> ";
+            std::cout << "———————————————————————————\n";
+            std::cout << "[$]   - Cancel\n";
+            std::cout << "———————————————————————————\n";
+            std::cout << "Enter file path. Enter '.' if using project directory.\n>> ";
             std::getline (std::cin, filepath);
 
             if (taskCancelled (filepath, "Open file")) continue;
 
-            // Handle path name
-            if (filepath.empty ())
+            if (filepath.size () == 1 && filepath[0] == '.')
                 filepath = PROJECT_PATH;
             else if (!validPathname (filepath)) {
                 log ("Error: Filename contains illegal characters.", 'e');
@@ -176,7 +241,6 @@ int main () {
             std::cout << "Enter file name. Leave blank if using default name \"todo.txt\".\n>> ";
             std::getline (std::cin, filename);
 
-            // Handle file name
             if (filename.empty ())
                 filename = "todo.txt";
             else if (!validFilename (filename)) {
@@ -184,16 +248,10 @@ int main () {
                 continue;
             }
 
-            // Make sure file name and path are in the correct format
             formatDirectory (filename, filepath);
-
-            // Read from file
             std::ifstream inputFile (filepath + filename);
-
-            // Clear current list
             list.clear ();
 
-            // Manage contents in file
             std::vector<std::string> entries;
             std::string temp;
 
@@ -211,27 +269,29 @@ int main () {
                 continue;
             }
 
-            // Add file contents to current list
+            std::string
+                event = "event=",
+                date = "date=",
+                category = "cat=";
+            size_t
+                cat_start,
+                event_start,
+                date_start,
+                size_of_arrow = 4;
+
             for (const auto &entry: entries) {
-                // Literals found in the file
-                std::string event = "event=", date = "date=", category = "cat=";
+                cat_start = entry.find (category);
+                event_start = entry.find (event);
+                date_start = entry.find (date);
 
-                // Locate the literals
-                size_t cat_start = entry.find (category);
-                size_t event_start = entry.find (event);
-                size_t date_start = entry.find (date);
-
-                // If not found
-                constexpr auto nil = std::string::npos;
                 if (cat_start == nil || event_start == nil || date_start == nil) {
                     format_error = true;
                     break;
                 }
 
-                // Extract and store into user variables
                 user_category = entry.substr (
                     category.length (),
-                    event_start - category.length () - 4
+                    event_start - category.length () - size_of_arrow
                 );
                 user_name = entry.substr (
                     event_start + event.length (),
@@ -243,7 +303,6 @@ int main () {
                         .length () - 1
                 );
 
-                // Insert into list
                 list.insert (
                     {
                         user_category,

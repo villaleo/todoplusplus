@@ -44,8 +44,11 @@ void displayHelp () {
     std::cout << "———————————————————————————\n[ins] - Insert an event into the list. Event details cannot";
     std::cout << " be empty.\n[rm]  - Remove an event from the list. Event details cannot be empty.\n";
     std::cout << "[vw]  - View events in the list.\n[sv]  - Save list to a file. Filename and path cannot contain ";
-    std::cout << "spaces nor illegal characters\n\t\t" << R"(such as '#', '%', '&', '{', '}', etc.)";
-    std::cout << "\n[q]   - Terminate the program   \n———————————————————————————\n";
+    std::cout << "spaces nor illegal characters";
+    std::cout << "\n[op]  - Open existing file. Filename and path cannot contain spaces nor illegal characters";
+    std::cout << "\n[q]   - Terminate the program\n" << Color::YELLOW << "Illegal characters include: ";
+    std::cout << R"('#', '%', '&', '{', '}', etc.)" << Color::RESET;
+    std::cout << "\n———————————————————————————\n";
 }
 
 bool taskCancelled (const std::string &str, const std::string &task) {
