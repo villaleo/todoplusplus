@@ -1,7 +1,7 @@
 # todoplusplus
 A command line application used to log tasks and save to a file. Available actions include inserting, removing, and viewing tasks.
 The user also the ability to save list contents to a new `.txt` file and to open an existing file created by the application to continue
-from where it last left off. Closing the application will not save the contents of the list unless explicity askde to using the `sv` command. <br>
+from where it last left off. Closing the application will not save the contents of the list unless explicity asked to using the `sv` command. <br>
 
 <h2>Installation</h2>
 This application was made using CMake, therefore ensure the environment you are using supports running C++ applications using CMake. <br>
