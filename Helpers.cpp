@@ -113,6 +113,24 @@ namespace external {
 namespace list_ops {
     using namespace external;
 
+    void formatDirectory (std::string &filename, std::string &pathname) {
+        // Check if path ends correctly
+        if (pathname.back () != '/' || pathname.back () != '\\')
+            pathname += (std::find (pathname.begin (), pathname.end (), '/') != pathname.end ()) ? '/' : '\\';
+
+        // Check if file extension is correct
+        auto extension = std::find (filename.begin (), filename.end (), '.');
+        if (extension == filename.end ())
+            filename += ".txt";
+        else {
+            // Change extension
+            std::string newFilename;
+            for (auto i = filename.begin (); i != extension; i++)
+                newFilename += *i;
+            filename = newFilename + ".txt";
+        }
+    }
+
     void insertIntoList (query_array &query, std::multimap<std::string, Event> &list) {
         std::cout << "[$]   - Cancel\n>> Event name: ";
         std::getline (std::cin, query.at (0));
