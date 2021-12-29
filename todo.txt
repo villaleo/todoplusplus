@@ -1,0 +1,5 @@
+cat=CST 300 => event=Lab 3 (date=Next Week)
+cat=CST 302 => event=Assignment 12 (date=23 December 2021)
+cat=Personal => event=Learn Java (date=Winter break)
+cat=Personal => event=Update website (date=January 1 2022)
+cat=Sample => event=Temp event (date=...)

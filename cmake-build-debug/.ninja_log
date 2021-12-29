@@ -1,0 +1,8 @@
+# ninja log v5
+1	421	1640319842502460976	CMakeFiles/Todoplusplus.dir/Main.cpp.o	c2c6a5765845a8a8
+583	624	1640320124637159571	Todoplusplus	793d2cea36487499
+0	47	1640498325055974778	build.ninja	6dce48c90f50a282
+1	583	1640320124593586207	CMakeFiles/Todoplusplus.dir/Helpers.cpp.o	32cb63eba2fac919
+4	513	1640564875945746002	CMakeFiles/Todoplusplus.dir/Main.cpp.o	bec2263540126fe1
+6	643	1640564876075492355	CMakeFiles/Todoplusplus.dir/Helpers.cpp.o	ccfaef2426ba4f7c
+643	717	1640564876151297817	Todoplusplus	793d2cea36487499
