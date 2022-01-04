@@ -6,7 +6,11 @@ from where it last left off. Closing the application will not save the contents 
 <h2>Installation</h2>
 This application was made using CMake, therefore ensure the environment you are using supports running C++ applications using CMake. <br>
 <h3>macOS</h3>
-...<br>
+<ul>
+  <li>Install <i>Xcode</i> from the App Store and ensure that you have C++ installed on your Mac.</li>
+  <li>Clone the repository and open the project using CLion. This application uses the C++ 17 standard.</li>
+  <li>Build and run the application directly from within CLion.</li>
+</ul>
 <h3>Windows</h3>
 <ul>
   <li>
