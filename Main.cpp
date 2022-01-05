@@ -13,7 +13,8 @@
 #include "Helpers.hpp"
 
 int main () {
-    const std::string PROJECT_PATH ("/Users/lvill/dev/Todoplusplus/");
+    // NOTE: Make sure to change the project path to the correct one
+    const std::string PROJECT_PATH ("YOUR PROJECT PATH");
     std::string selection, user_name, user_date, user_category;
     std::array<std::string, 3> user_details { selection, user_name, user_date };
     std::multimap<std::string, Event> list;
