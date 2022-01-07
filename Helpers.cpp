@@ -9,15 +9,15 @@
 
 namespace external {
     void displayMenu () {
-        std::cout << "———————————————————————————\n[ins] - Insert an event    \n";
-        std::cout << "[rm]  - Remove an event    \n[vw]  - View events        \n";
-        std::cout << "[sv]  - Save list to a file\n[op]  - Open existing file \n";
-        std::cout << "[q]   - Quit the program   \n[h]   - Help               \n";
-        std::cout << "———————————————————————————\n";
+        cout << "———————————————————————————\n[ins] - Insert an event    \n";
+        cout << "[rm]  - Remove an event    \n[vw]  - View events        \n";
+        cout << "[sv]  - Save list to a file\n[op]  - Open existing file \n";
+        cout << "[q]   - Quit the program   \n[h]   - Help               \n";
+        cout << "———————————————————————————\n";
     }
 
-    bool validFilename (const std::string &path) {
-        std::set<char> illegal_chars {
+    bool validFilename (const string &path) {
+        set<char> illegal_chars {
             '#', '%', '&', '{', '}', '\\',
             '<', '>', '*', '?', '/', '$',
             '!', '\'', '\"', ':', '@', '+',
@@ -30,8 +30,8 @@ namespace external {
         return true;
     }
 
-    bool validPathname (const std::string &path) {
-        std::set<char> illegal_chars {
+    bool validPathname (const string &path) {
+        set<char> illegal_chars {
             '#', '%', '&', '{', '}',
             '<', '>', '*', '?', '$',
             '!', '\'', '\"', ':', '@',
@@ -45,105 +45,88 @@ namespace external {
     }
 
     void displayHelp () {
-        std::cout << "———————————————————————————\n[ins] - Insert an event into the list. Event details cannot";
-        std::cout << " be empty.\n[rm]  - Remove an event from the list. Event details cannot be empty.\n";
-        std::cout << "[vw]  - View events in the list.\n[sv]  - Save list to a file. Filename and path cannot contain ";
-        std::cout << "spaces nor illegal characters";
-        std::cout << "\n[op]  - Open existing file. Filename and path cannot contain spaces nor illegal characters";
-        std::cout << "\n[q]   - Terminate the program\n" << Color::YELLOW << "Illegal characters include: ";
-        std::cout << R"('#', '%', '&', '{', '}', etc.)" << Color::RESET;
-        std::cout << "\n———————————————————————————\n";
+        cout << "———————————————————————————\n[ins] - Insert an event into the list. Event details cannot";
+        cout << " be empty.\n[rm]  - Remove an event from the list. Event details cannot be empty.\n";
+        cout << "[vw]  - View events in the list.\n[sv]  - Save list to a file. Filename and path cannot contain ";
+        cout << "spaces nor illegal characters";
+        cout << "\n[op]  - Open existing file. Filename and path cannot contain spaces nor illegal characters";
+        cout << "\n[q]   - Terminate the program\n" << Color::YELLOW << "Illegal characters include: ";
+        cout << R"('#', '%', '&', '{', '}', etc.)" << Color::RESET;
+        cout << "\n———————————————————————————\n";
     }
 
-    bool taskCancelled (const std::string &str, const std::string &task) {
+    bool taskCancelled (const string &str, const string &task) {
         if (str.length () == 1 && str[0] == '$') {
-            std::string message = task + " cancelled.";
+            string message = task + " cancelled.";
             log (message, 'w');
             return true;
         }
         return false;
-    };
+    }
 
-    std::string &toLower (std::string &str) {
+    string &toLower (string &str) {
         for (char &c: str)
-            c = static_cast<char> (std::tolower (c));
+            c = static_cast<char> (tolower (c));
         return str;
     }
 
-    void log (const std::string &msg, char type) {
-        type = static_cast<char> (std::tolower (type));
+    void log (const string &msg, char type) {
+        type = static_cast<char> (tolower (type));
         if (type == 'w')
-            std::cout << "\n* " << Color::YELLOW << msg << Color::RESET << '\n';
+            cout << "\n* " << Color::YELLOW << msg << Color::RESET << '\n';
         else if (type == 'e')
-            std::cout << "\n* " << Color::RED << msg << Color::RESET << '\n';
+            cout << "\n* " << Color::RED << msg << Color::RESET << '\n';
         else if (type == 's')
-            std::cout << "\n* " << Color::GREEN << msg << Color::RESET << '\n';
+            cout << "\n* " << Color::GREEN << msg << Color::RESET << '\n';
         else
-            std::cout << "\n* " << msg << '\n';
+            cout << "\n* " << msg << '\n';
     }
 
-    void trimRight (std::string &str) {
+    void trimRight (string &str) {
         str.erase (
-            std::find_if (
+            find_if (
                 str.rbegin (), str.rend (), [] (unsigned char c) {
-                    return !std::isspace (c);
+                    return !isspace (c);
                 }
             ).base (), str.end ());
     }
 
-    void formatDirectory (std::string &filename, std::string &pathname) {
-        // Check if path ends correctly
-        if (pathname.back () != '/' || pathname.back () != '\\')
-            pathname += (std::find (pathname.begin (), pathname.end (), '/') != pathname.end ()) ? '/' : '\\';
-
-        // Check if file extension is correct
-        auto extension = std::find (filename.begin (), filename.end (), '.');
-        if (extension == filename.end ())
-            filename += ".txt";
-        else {
-            // Change extension
-            std::string newFilename;
-            for (auto i = filename.begin (); i != extension; i++)
-                newFilename += *i;
-            filename = newFilename + ".txt";
-        }
-    }
-}
+} // namespace external
 
 namespace list_ops {
     using namespace external;
 
-    void formatDirectory (std::string &filename, std::string &pathname) {
+    void formatDirectory (string &filename, string &pathname) {
         // Check if path ends correctly
         if (pathname.back () != '/' || pathname.back () != '\\')
-            pathname += (std::find (pathname.begin (), pathname.end (), '/') != pathname.end ()) ? '/' : '\\';
+            pathname += (find (pathname.begin (), pathname.end (), '/') != pathname.end ()) ? '/' : '\\';
 
         // Check if file extension is correct
-        auto extension = std::find (filename.begin (), filename.end (), '.');
+        auto extension = find (filename.begin (), filename.end (), '.');
         if (extension == filename.end ())
             filename += ".txt";
         else {
             // Change extension
-            std::string newFilename;
+            string newFilename;
             for (auto i = filename.begin (); i != extension; i++)
                 newFilename += *i;
             filename = newFilename + ".txt";
         }
     }
 
-    void insertIntoList (query_array &query, std::multimap<std::string, Event> &list) {
-        std::cout << "[$]   - Cancel\n>> Event name: ";
-        std::getline (std::cin, query.at (0));
+    void insertIntoList (array<string, USER_DETAILS_SIZE> &query, multimap<string, Event> &list) {
+        cout << "[$]   - Cancel\n>> Event name: ";
+        getline (cin, query.at (0));
 
         if (taskCancelled (query.at (0), "Insert")) return;
 
-        std::cout << ">> Event date: ";
-        std::getline (std::cin, query.at (1));
+        cout << ">> Event date: ";
+        getline (cin, query.at (1));
 
         if (taskCancelled (query.at (1), "Insert")) return;
 
-        std::cout << ">> Event category: ";
-        std::getline (std::cin, query.at (2));
+        cout << ">> Event category: ";
+        getline (cin, query.at (2));
 
         if (taskCancelled (query.at (2), "Insert")) return;
 
@@ -156,28 +139,28 @@ namespace list_ops {
             log ("Error: Invalid event details specified.", 'e');
     }
 
-    void removeFromList (query_array &query, std::multimap<std::string, Event> &list) {
+    void removeFromList (array<string, USER_DETAILS_SIZE> &query, multimap<string, Event> &list) {
         bool removed = false;
-        std::string input_buffer;
+        string input_buffer;
 
-        std::cout << "———————————————————————————\n";
-        std::cout << "[a]  - Remove by specific details\n";
-        std::cout << "[n]  - Remove by name\n";
-        std::cout << "[k]  - Clear list\n";
-        std::cout << "[c]  - Cancel\n";
-        std::cout << "———————————————————————————\n>> ";
+        cout << "———————————————————————————\n";
+        cout << "[a]  - Remove by specific details\n";
+        cout << "[n]  - Remove by name\n";
+        cout << "[k]  - Clear list\n";
+        cout << "[c]  - Cancel\n";
+        cout << "———————————————————————————\n>> ";
 
-        std::getline (std::cin, input_buffer);
+        getline (cin, input_buffer);
 
         if (taskCancelled (input_buffer, "Remove")) return;
 
         if (input_buffer == "a") { // Remove by specific details
-            std::cout << ">> Event name: ";
-            std::getline (std::cin, query.at (0));
-            std::cout << ">> Event date: ";
-            std::getline (std::cin, query.at (1));
-            std::cout << ">> Event category: ";
-            std::getline (std::cin, query.at (2));
+            cout << ">> Event name: ";
+            getline (cin, query.at (0));
+            cout << ">> Event date: ";
+            getline (cin, query.at (1));
+            cout << ">> Event category: ";
+            getline (cin, query.at (2));
 
             auto event = Event (query.at (0), query.at (1));
             if (event.null ()) {
@@ -198,10 +181,10 @@ namespace list_ops {
             if (!removed) log ("Error: Event not found.", 'e');
         }
         else if (input_buffer == "n") { // Remove by name
-            std::string name;
-            std::cout << ">> Event name: ";
+            string name;
+            cout << ">> Event name: ";
 
-            std::getline (std::cin, name);
+            getline (cin, name);
 
             if (name.empty ()) {
                 log ("Error: Invalid event details specified.", 'e');
@@ -231,15 +214,15 @@ namespace list_ops {
         if (!removed) log ("Error: No such event exists.", 'e');
     }
 
-    void displayList (const std::multimap<std::string, Event> &list) {
-        std::cout << "———————————————————————————\n";
-        std::cout << "[a]  - View all events\n";
-        std::cout << "[c]  - View by category\n";
-        std::cout << "[$]   - Cancel\n";
-        std::cout << "———————————————————————————\n";
+    void displayList (const multimap<string, Event> &list) {
+        cout << "———————————————————————————\n";
+        cout << "[a]  - View all events\n";
+        cout << "[c]  - View by category\n";
+        cout << "[$]   - Cancel\n";
+        cout << "———————————————————————————\n";
 
-        std::string choice, category;
-        std::getline (std::cin, choice);
+        string choice, category;
+        getline (cin, choice);
 
         if (taskCancelled (choice, "View")) return;
 
@@ -249,17 +232,17 @@ namespace list_ops {
                 return;
             }
 
-            std::cout << "———————————————————————————\n";
+            cout << "———————————————————————————\n";
             for (const auto &i: list) {
-                std::cout << i.second
+                cout << i.second
                     .getName () << " (" << i.second
                     .getDate () << ")\n";
             }
-            std::cout << "———————————————————————————\n";
+            cout << "———————————————————————————\n";
         }
         else if (choice == "c") {
-            std::cout << ">> Category: ";
-            std::getline (std::cin, category);
+            cout << ">> Category: ";
+            getline (cin, category);
 
             if (list.find (category) == list.end ()) {
                 log ("Error: No matching category found.", 'e');
@@ -272,28 +255,28 @@ namespace list_ops {
                 return;
             }
 
-            std::cout << "———————————————————————————\n";
-            std::string buffer;
+            cout << "———————————————————————————\n";
+            string buffer;
             for (auto i = begin; i != end; i++) {
-                std::cout << i->second
-                                 .getName () + " (";
-                std::cout << i->second
-                                 .getDate () + ")\n";
+                cout << i->second
+                            .getName () + " (";
+                cout << i->second
+                            .getDate () + ")\n";
             }
-            std::cout << "———————————————————————————\n";
+            cout << "———————————————————————————\n";
         }
     }
 
-    void saveListToFile (const std::multimap<std::string, Event> &list, const std::string &PROJECT_DIR) {
-        std::string choice, pathname, filename;
+    void saveListToFile (const multimap<string, Event> &list, const string &PROJECT_DIR) {
+        string choice, pathname, filename;
 
-        std::cout << "———————————————————————————\n";
-        std::cout << "[$]   - Cancel\n";
-        std::cout << "———————————————————————————\n>> ";
+        cout << "———————————————————————————\n";
+        cout << "[$]   - Cancel\n";
+        cout << "———————————————————————————\n>> ";
 
 
-        std::cout << "Enter pathname. If project directory, enter '.':\n>> ";
-        std::getline (std::cin, pathname);
+        cout << "Enter pathname. If project directory, enter '.':\n>> ";
+        getline (cin, pathname);
 
         if (taskCancelled (pathname, "Save")) return;
 
@@ -304,8 +287,8 @@ namespace list_ops {
             return;
         }
 
-        std::cout << "Enter filename or leave empty for default name, \"todo.txt\".\n>> ";
-        std::getline (std::cin, filename);
+        cout << "Enter filename or leave empty for default name, \"todo.txt\".\n>> ";
+        getline (cin, filename);
 
         if (taskCancelled (filename, "Save")) return;
 
@@ -318,7 +301,7 @@ namespace list_ops {
 
         formatDirectory (filename, pathname);
 
-        std::ofstream outputFile (pathname + filename);
+        ofstream outputFile (pathname + filename);
         if (outputFile.fail ()) {
             log ("Error: Something went wrong.", 'e');
             return;
@@ -333,15 +316,15 @@ namespace list_ops {
         log ("File insertion successful.", 's');
     }
 
-    void loadListFromFile (std::multimap<std::string, Event> &list, const std::string &PROJECT_DIR) {
-        std::string filepath, filename;
+    void loadListFromFile (multimap<string, Event> &list, const string &PROJECT_DIR) {
+        string filepath, filename;
         bool format_error { false };
 
-        std::cout << "———————————————————————————\n";
-        std::cout << "[$]   - Cancel\n";
-        std::cout << "———————————————————————————\n";
-        std::cout << "Enter file path. Enter '.' if using project directory.\n>> ";
-        std::getline (std::cin, filepath);
+        cout << "———————————————————————————\n";
+        cout << "[$]   - Cancel\n";
+        cout << "———————————————————————————\n";
+        cout << "Enter file path. Enter '.' if using project directory.\n>> ";
+        getline (cin, filepath);
 
         if (taskCancelled (filepath, "Open file")) return;
 
@@ -352,8 +335,8 @@ namespace list_ops {
             return;
         }
 
-        std::cout << "Enter file name. Leave blank if using default name \"todo.txt\".\n>> ";
-        std::getline (std::cin, filename);
+        cout << "Enter file name. Leave blank if using default name \"todo.txt\".\n>> ";
+        getline (cin, filename);
 
         if (filename.empty ())
             filename = "todo.txt";
@@ -363,19 +346,20 @@ namespace list_ops {
         }
 
         formatDirectory (filename, filepath);
-        std::ifstream inputFile (filepath + filename);
+        ifstream inputFile (filepath + filename);
         list.clear ();
 
-        std::vector<std::string> entries;
-        std::string temp;
+        vector<string> entries;
+        string temp;
 
         if (inputFile.fail ()) {
             log ("Error: Something went wrong.", 'e');
             return;
         }
 
-        while (std::getline (inputFile, temp))
+        while (getline (inputFile, temp))
             entries.push_back (temp);
+
         inputFile.close ();
 
         if (entries.empty ()) {
@@ -383,21 +367,8 @@ namespace list_ops {
             return;
         }
 
-        std::string
-            event = "event=",
-            date = "date=",
-            category = "cat=",
-            event_query,
-            date_query,
-            category_query;
-
-        size_t
-            cat_start,
-            event_start,
-            date_start,
-            size_of_arrow = 4,
-            excess_spaces = 3,
-            last_parenthesis = 1;
+        string event = "event=", date = "date=", category = "cat=", event_query, date_query, category_query;
+        size_t cat_start, event_start, date_start, size_of_arrow = 4, excess_spaces = 3, last_parenthesis = 1;
 
         for (const auto &entry: entries) {
             cat_start = entry.find (category);
@@ -423,12 +394,7 @@ namespace list_ops {
                     .length () - last_parenthesis
             );
 
-            list.insert (
-                {
-                    category_query,
-                    Event (event_query, date_query)
-                }
-            );
+            list.insert ({ category_query, Event (event_query, date_query) });
         }
 
         if (format_error)

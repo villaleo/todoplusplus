@@ -6,24 +6,22 @@
 #include <cstdlib>
 #include <map>
 #include <utility>
-#include <fstream>
-#include <vector>
 #include <array>
 #include "Event.hpp"
 #include "Helpers.hpp"
 
 int main () {
-    // NOTE: Make sure to change the project path to the correct one
-    const std::string PROJECT_PATH ("YOUR PROJECT PATH");
-    std::string selection, user_name, user_date, user_category;
-    std::array<std::string, 3> user_details { selection, user_name, user_date };
-    std::multimap<std::string, Event> list;
+    const string PROJECT_PATH ("YOUR PROJECT PATH");  // NOTE: Make sure to change the project path to the correct one
+    string selection, user_name, user_date, user_category;
+
+    array<string , USER_DETAILS_SIZE> user_details { selection, user_name, user_date };
+    multimap<string , Event> list;
 
     external::displayMenu ();
     do {
-        std::cout << "Enter selection.\n>> ";
-        std::cin >> selection;
-        std::cin.ignore ();
+        cout << "Enter selection.\n>> ";
+        cin >> selection;
+        cin.ignore ();
         selection = external::toLower (selection);
         external::trimRight (selection);
 
