@@ -9,11 +9,10 @@
 
 namespace external {
     void displayMenu () {
-        cout << "———————————————————————————\n[ins] - Insert an event    \n";
-        cout << "[rm]  - Remove an event    \n[vw]  - View events        \n";
-        cout << "[sv]  - Save list to a file\n[op]  - Open existing file \n";
-        cout << "[q]   - Quit the program   \n[h]   - Help               \n";
-        cout << "———————————————————————————\n";
+        cout << "  ______          __                \n /_  __/___  ____/ /___    __    __ \n";
+        cout << "  / / / __ \\/ __  / __ \\__/ /___/ /_\n / / / /_/ / /_/ / /_/ /_  __/_  __/\n";
+        cout << "/_/  \\____/\\____/\\____/ /_/   /_/   \n";
+        cout << "Created by Leonardo Villalobos.\nPress [h] for help.\n\n";
     }
 
     bool validFilename (const string &path) {

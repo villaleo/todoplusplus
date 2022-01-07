@@ -17,7 +17,7 @@
 #include "Event.hpp"
 
 using std::string, std::array, std::set, std::multimap, std::vector, std::cout, std::cin, std::getline, std::tolower,
-    std::isspace, std::find, std::ofstream, std::ifstream;
+std::isspace, std::find, std::ofstream, std::ifstream;
 
 constexpr auto nil = string::npos;
 constexpr size_t USER_DETAILS_SIZE = 3;

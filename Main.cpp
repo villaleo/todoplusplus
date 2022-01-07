@@ -14,8 +14,8 @@ int main () {
     const string PROJECT_PATH ("YOUR PROJECT PATH");  // NOTE: Make sure to change the project path to the correct one
     string selection, user_name, user_date, user_category;
 
-    array<string , USER_DETAILS_SIZE> user_details { selection, user_name, user_date };
-    multimap<string , Event> list;
+    array<string, USER_DETAILS_SIZE> user_details { selection, user_name, user_date };
+    multimap<string, Event> list;
 
     external::displayMenu ();
     do {
