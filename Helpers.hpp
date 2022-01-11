@@ -28,14 +28,6 @@ namespace external {
     void displayMenu ();
 
     /**
-     * Check if buffer input is marked as discarded.
-     * @param str The input buffer.
-     * @param task The task name.
-     * @return If task was cancelled.
-     */
-    bool taskCancelled (const string &str, const string &task);
-
-    /**
      * Mutate a string to all lower case characters.
      * @param str The input string.
      * @return The string in all lower case.
