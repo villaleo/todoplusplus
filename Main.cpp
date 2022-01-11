@@ -7,43 +7,78 @@
 #include <map>
 #include <utility>
 #include <array>
+#include <sstream>
 #include "Event.hpp"
 #include "Helpers.hpp"
 
 int main () {
     const string PROJECT_PATH ("YOUR PROJECT PATH");  // NOTE: Make sure to change the project path to the correct one
-    string selection, user_name, user_date, user_category;
+    string query, command, flag_1, flag_2;
+    string user_name, user_date, user_category;
 
-    array<string, USER_DETAILS_SIZE> user_details { selection, user_name, user_date };
+    array<string, USER_DETAILS_SIZE> user_details { query, user_name, user_date };
     multimap<string, Event> list;
 
     external::displayMenu ();
     do {
-        cout << "Enter selection.\n>> ";
-        cin >> selection;
-        cin.ignore ();
-        selection = external::toLower (selection);
-        external::trimRight (selection);
+        cout << ">> ";
+        getline (cin, query);
 
-        if (selection == "ins")
-            list_ops::insertIntoList (user_details, list);
-        else if (selection == "rm")
-            list_ops::removeFromList (user_details, list);
-        else if (selection == "vw")
-            list_ops::displayList (list);
-        else if (selection == "sv")
-            list_ops::saveListToFile (list, PROJECT_PATH);
-        else if (selection == "op")
-            list_ops::loadListFromFile (list, PROJECT_PATH);
-        else if (selection == "q") {
+        query = external::trimLeft (query);
+        size_t space_index = query.find_first_of (' ');
+
+        if (space_index == nil) {
+            command = query;
+        }
+        else {
+            command = query.substr (0, space_index);
+            query = query.substr (space_index + 1);
+        }
+
+        external::toLower (command);
+
+        if (command == "add") {
+            operations::insertIntoList (list);
+        }
+        else if (command == "del") {
+            stringstream ss (query);
+            ss >> flag_1;
+
+            operations::removeFromList (list, flag_1);
+        }
+        else if (command == "view") {
+            stringstream ss (query);
+            ss >> flag_1;
+
+            operations::displayList (list, flag_1);
+        }
+        else if (command == "save") {
+            stringstream ss (query);
+            ss >> flag_1 >> flag_2;
+
+            try {
+                operations::saveToFile (list, flag_1, flag_2);
+            }
+            catch (out_of_range &error) {
+                external::log ("Error: File name and extension cannot be empty.", 'e');
+            }
+        }
+        else if (command == "open") {
+            stringstream ss (query);
+            ss >> flag_1 >> flag_2;
+
+            operations::loadFromPath (list, flag_1, flag_2);
+        }
+        else if (command == "quit") {
             external::log ("Terminating...", 'w');
             continue;
         }
-        else if (selection == "h")
+        else if (command == "help") {
             external::displayHelp ();
-        else // Unknown action
-            external::log ("Error: Unknown command. Press \'h\' for help.", 'e');
-    } while (selection != "q");
+        }
+        else
+            external::log ("Error: Unknown command. Enter <help> for help.", 'e');
+    } while (command != "quit");
 
     return EXIT_SUCCESS;
 }

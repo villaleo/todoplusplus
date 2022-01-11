@@ -10,15 +10,13 @@
 #include <type_traits>
 
 /**
- * Create an Event, consisting of a name and a date. A 'null' Event
- * is defined to be an Event with either an empty name or date members.
+ * Create an Event, consisting of a name and a date.
  */
 class Event {
 public:
     Event () = default;
 
-    Event (std::string name, std::string date):
-        name (std::move (name)), date (std::move (date)) {}
+    Event (std::string name, std::string date): name (std::move (name)), date (std::move (date)) {}
 
     // Accessors
     [[nodiscard]] const std::string &getName () const { return name; }
@@ -35,13 +33,6 @@ public:
         assert(!n_date.empty ());
         Event::date = n_date;
     }
-
-    /**
-     * An Event is defined to be 'null' if either the name or date members
-     * are blank.
-     * @return If an event is 'null' (empty name or date).
-     */
-    [[nodiscard]] bool null () const { return name.empty () || date.empty (); }
 
     /**
      * An Event is equal to another Event iff the name and date are exactly
