@@ -4,20 +4,19 @@
 
 #include <iostream>
 #include <cstdlib>
-#include <map>
 #include <utility>
 #include <array>
 #include <sstream>
-#include "Event.hpp"
 #include "Helpers.hpp"
+
+// The data structure to hold the events.
+multimap<string, Event> list;
 
 int main () {
     const string PROJECT_PATH ("YOUR PROJECT PATH");  // NOTE: Make sure to change the project path to the correct one
     string query, command, flag_1, flag_2;
     string user_name, user_date, user_category;
-
     array<string, USER_DETAILS_SIZE> user_details { query, user_name, user_date };
-    multimap<string, Event> list;
 
     external::displayMenu ();
     do {
@@ -38,26 +37,26 @@ int main () {
         external::toLower (command);
 
         if (command == "add") {
-            operations::insertIntoList (list);
+            operations::insertIntoList ();
         }
         else if (command == "del") {
             stringstream ss (query);
             ss >> flag_1;
 
-            operations::removeFromList (list, flag_1);
+            operations::removeFromList (flag_1);
         }
         else if (command == "view") {
             stringstream ss (query);
             ss >> flag_1;
 
-            operations::displayList (list, flag_1);
+            operations::displayList (flag_1);
         }
         else if (command == "save") {
             stringstream ss (query);
             ss >> flag_1 >> flag_2;
 
             try {
-                operations::saveToFile (list, flag_1, flag_2);
+                operations::saveToFile (flag_1, flag_2);
             }
             catch (out_of_range &error) {
                 external::log ("Error: File name and extension cannot be empty.", 'e');
@@ -67,7 +66,7 @@ int main () {
             stringstream ss (query);
             ss >> flag_1 >> flag_2;
 
-            operations::loadFromPath (list, flag_1, flag_2);
+            operations::loadFromPath (flag_1, flag_2);
         }
         else if (command == "quit") {
             external::log ("Terminating...", 'w');

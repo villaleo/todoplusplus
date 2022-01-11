@@ -99,35 +99,34 @@ namespace external {
 namespace operations {
     /**
      * Insert a new event into the event list.
-     * @param list The list of events to insert into.
      */
-    void insertIntoList (multimap<string, Event> &list);
+    void insertIntoList ();
 
     /**
      * Remove an event from the event list.
-     * @param list The list of events to remove from.
      * @param flag A flag to specify how to remove the event.
      */
-    void removeFromList (multimap<string, Event> &list, const string &flag);
+    void removeFromList (const string &flag);
 
     /**
      * Display the events in the event list.
-     * @param list The list of events to display.
      * @param flag A flag to specify how to display the events.
      */
-    void displayList (const multimap<string, Event> &list, const string &flag);
+    void displayList (const string &flag);
 
     /**
      * Save the events in the event list to a file.
-     * @param list The list of events to save.
+     * @param filepath The path of the file to save the events to.
+     * @param filename The name of the file to save the events to.
      */
-    void saveToFile (const multimap<string, Event> &list, string &filepath, string &filename);
+    void saveToFile (string &filepath, string &filename);
 
     /**
      * Load the events from a file into the event list.
-     * @param list The list of events to load.
+     * @param filepath The path of the file to load the events from.
+     * @param filename The name of the file to load the events from.
      */
-    void loadFromPath (multimap<string, Event> &list, string &filepath, string &filename);
+    void loadFromPath (string &filepath, string &filename);
 }
 
 #endif //HELPERS_HPP

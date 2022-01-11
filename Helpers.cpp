@@ -7,6 +7,8 @@
 #include <vector>
 #include "Helpers.hpp"
 
+extern multimap<string, Event> list;
+
 namespace external {
     void displayMenu () {
         cout << "  ______          __                \n /_  __/___  ____/ /___    __    __ \n";
@@ -112,7 +114,7 @@ namespace external {
 namespace operations {
     using namespace external;
 
-    void insertIntoList (multimap<string, Event> &list) {
+    void insertIntoList () {
         string eventName, eventDate, eventCategory;
 
         cout << ">> Event name: ";
@@ -141,7 +143,7 @@ namespace operations {
         log ("Event insertion successfully.", 's');
     } // end insertIntoList
 
-    void removeFromList (multimap<string, Event> &list, const string &flag) {
+    void removeFromList (const string &flag) {
         bool removed = false;
 
         if (flag == "del")
@@ -238,7 +240,7 @@ namespace operations {
             log ("Error: No such event exists.", 'e');
     } // end removeFromList
 
-    void displayList (const multimap<string, Event> &list, const string &flag) {
+    void displayList (const string &flag) {
         if (flag == "view")
             goto DisplayAll;
 
@@ -291,7 +293,7 @@ namespace operations {
             log ("Error: Invalid flag specified.", 'e');
     } // end displayList
 
-    void saveToFile (const multimap<string, Event> &list, string &filepath, string &filename) {
+    void saveToFile (string &filepath, string &filename) {
         filepath = filepath.substr (3);  // Remove the "p=" prefix.
         filename = filename.substr (3);  // Remove the "f=" prefix.
 
@@ -329,7 +331,7 @@ namespace operations {
         log ("File insertion successful.", 's');
     } // end saveToFile
 
-    void loadFromPath (multimap<string, Event> &list, string &filepath, string &filename) {
+    void loadFromPath (string &filepath, string &filename) {
         bool formatError = false;
 
         filepath = filepath.substr (3);  // Remove the "p=" prefix.
