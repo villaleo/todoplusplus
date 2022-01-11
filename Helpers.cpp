@@ -9,7 +9,7 @@
 
 extern multimap<string, Event> list;
 
-namespace external {
+namespace helpers {
     void displayMenu () {
         cout << "  ______          __                \n /_  __/___  ____/ /___    __    __ \n";
         cout << "  / / / __ \\/ __  / __ \\__/ /___/ /_\n / / / /_/ / /_/ / /_/ /_  __/_  __/\n";
@@ -109,10 +109,10 @@ namespace external {
             filename = newFilename + ".txt";
         }
     } // end formatDirectory
-} // end namespace external
+} // end namespace helpers
 
 namespace operations {
-    using namespace external;
+    using namespace helpers;
 
     void insertIntoList () {
         string eventName, eventDate, eventCategory;

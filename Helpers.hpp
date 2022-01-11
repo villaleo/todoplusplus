@@ -21,7 +21,7 @@ using namespace std;
 constexpr auto nil = string::npos;
 constexpr size_t USER_DETAILS_SIZE = 3;
 
-namespace external {
+namespace helpers {
     /**
     * Display menu with options and brief summaries.
     */
@@ -94,7 +94,7 @@ namespace external {
      * @param pathname The path of the file.
      */
     void formatDirectory (string &filename, string &pathname);
-}
+} // end namespace helpers
 
 namespace operations {
     /**
@@ -127,6 +127,6 @@ namespace operations {
      * @param filename The name of the file to load the events from.
      */
     void loadFromPath (string &filepath, string &filename);
-}
+} // end namespace operations
 
 #endif //HELPERS_HPP

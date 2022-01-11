@@ -18,12 +18,12 @@ int main () {
     string user_name, user_date, user_category;
     array<string, USER_DETAILS_SIZE> user_details { query, user_name, user_date };
 
-    external::displayMenu ();
+    helpers::displayMenu ();
     do {
         cout << ">> ";
         getline (cin, query);
 
-        query = external::trimLeft (query);
+        query = helpers::trimLeft (query);
         size_t space_index = query.find_first_of (' ');
 
         if (space_index == nil) {
@@ -34,7 +34,7 @@ int main () {
             query = query.substr (space_index + 1);
         }
 
-        external::toLower (command);
+        helpers::toLower (command);
 
         if (command == "add") {
             operations::insertIntoList ();
@@ -59,7 +59,7 @@ int main () {
                 operations::saveToFile (flag_1, flag_2);
             }
             catch (out_of_range &error) {
-                external::log ("Error: File name and extension cannot be empty.", 'e');
+                helpers::log ("Error: File name and extension cannot be empty.", 'e');
             }
         }
         else if (command == "open") {
@@ -69,14 +69,14 @@ int main () {
             operations::loadFromPath (flag_1, flag_2);
         }
         else if (command == "quit") {
-            external::log ("Terminating...", 'w');
+            helpers::log ("Terminating...", 'w');
             continue;
         }
         else if (command == "help") {
-            external::displayHelp ();
+            helpers::displayHelp ();
         }
         else
-            external::log ("Error: Unknown command. Enter <help> for help.", 'e');
+            helpers::log ("Error: Unknown command. Enter <help> for help.", 'e');
     } while (command != "quit");
 
     return EXIT_SUCCESS;
