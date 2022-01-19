@@ -3,6 +3,8 @@ A command line application used to log tasks and save to a file. Available actio
 The user also the ability to save list contents to a new `.txt` file and to open an existing file created by the application to continue
 from where it last left off. Closing the application will not save the contents of the list unless explicity asked to using the `sv` command. <br>
 
+![A preview of the application](images/demo-todopp.gif)
+
 <h2>Installation</h2>
 This application was made using CMake, therefore ensure the environment you are using supports running C++ applications using CMake. <br>
 <h3>macOS</h3>
