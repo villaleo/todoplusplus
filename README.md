@@ -11,9 +11,11 @@ This application was made using CMake, therefore ensure the environment you are 
 using CMake. <br>
 <h3>macOS</h3>
 <ul>
-  <li>Install <i>Xcode</i> from the App Store and ensure that you have C++ installed on your Mac.</li>
-  <li>Clone the repository and open the project using CLion. This application uses the C++ 17 standard.</li>
-  <li>Build and run the application directly from within CLion.</li>
+  <li>
+  I built this application using <i>CLion</i> and Apple clang version 12.0.5 (clang-1205.0.22.9). In addition,
+  this project was built using the C++ 17 standard. I could not find any reliable sources nor methods to open a
+  CMake project on macOS without using CLion.
+  </li>
 </ul>
 <h3>Windows</h3>
 <ul>
