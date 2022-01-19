@@ -62,7 +62,14 @@ namespace helpers {
         cout << "\n                            Illegal characters for file paths:\n";
         cout << "                                   " << R"('#', '%', '&', '{', '}', '<', '>', '*', '?', '$', '!',)";
         cout << "\n                                   " << R"(''', '"', ':', '@', '`', '|', '=', '+', ' ')";
-        cout << Color::RESET << "\n<quit>                      - Terminate the program.\n";
+        cout << Color::RESET << "\n<set> <@...> <...>          - Define a special variable which can be used in place\n";
+        cout << "                              of text in special contexts.\n";
+        cout << "                                   @PATH: Stores a path name. Can be used in place of a path. Reference\n";
+        cout << "                                          the variable by typing '@PATH' in the context of a file path.\n";
+        cout << "                                   @NAME: Stores a file name. Can be used in place of a file name.\n";
+        cout << "                                          Reference the variable by typing '@NAME' in the context of a\n";
+        cout << "                                          file name.\n";
+        cout << "\n<quit>                      - Terminate the program.\n";
         cout << "======================================================\n";
     } // end displayHelp
 
@@ -297,6 +304,13 @@ namespace operations {
         filepath = filepath.substr (3);  // Remove the "p=" prefix.
         filename = filename.substr (3);  // Remove the "f=" prefix.
 
+        if (filepath == "@PATH") {
+            filepath = variables::defaultPath;
+        }
+        if (filename == "@NAME") {
+            filename = variables::defaultName;
+        }
+
         if (filepath.empty ()) {
             log ("Error: Filepath cannot be empty.", 'e');
             return;
@@ -336,6 +350,13 @@ namespace operations {
 
         filepath = filepath.substr (3);  // Remove the "p=" prefix.
         filename = filename.substr (3);  // Remove the "f=" prefix.
+
+        if (filepath == "@PATH") {
+            filepath = variables::defaultPath;
+        }
+        if (filename == "@NAME") {
+            filename = variables::defaultName;
+        }
 
         if (!validPathname (filepath)) {
             log ("Error: Path name contains illegal characters.", 'e');
@@ -397,15 +418,13 @@ namespace operations {
     } // end loadFromPath
 
     void set (string &flag, string &argument) {
-        toLower (flag);
-
-        if (flag == "-def-path") {
+        if (flag == "@PATH") {
             if (!validPathname (argument))
                 log ("Error: Path name contains invalid characters.", 'e');
 
             variables::defaultPath = argument;
         }
-        else if (flag == "-def-name") {
+        else if (flag == "@NAME") {
             if (!validFilename (argument))
                 log ("Error: File name contains invalid characters.", 'e');
 
@@ -414,5 +433,5 @@ namespace operations {
         else {
             log ("Error: Invalid flag specified.", 'e');
         }
-    }
+    } // end set
 } // end namespace operations

@@ -135,9 +135,9 @@ namespace operations {
     void set(string &flag, string &argument);
 
     namespace variables {
-        static std::string defaultPath = "null";
-        static std::string defaultName = "null";
-    }
+        static std::string defaultPath;
+        static std::string defaultName;
+    } // end namespace variables
 } // end namespace operations
 
 #endif //HELPERS_HPP
