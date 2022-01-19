@@ -127,6 +127,17 @@ namespace operations {
      * @param filename The name of the file to load the events from.
      */
     void loadFromPath (string &filepath, string &filename);
+
+    /**
+     * Set pre-existing flags to hold values.
+     * @param flag The flag to set up.
+     */
+    void set(string &flag, string &argument);
+
+    namespace variables {
+        static std::string defaultPath = "null";
+        static std::string defaultName = "null";
+    }
 } // end namespace operations
 
 #endif //HELPERS_HPP

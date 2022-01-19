@@ -75,6 +75,12 @@ int main () {
         else if (command == "help") {
             helpers::displayHelp ();
         }
+        else if (command == "set") {
+            stringstream ss (query);
+            ss >> flag_1 >> flag_2;
+
+            operations::set (flag_1, flag_2);
+        }
         else
             helpers::log ("Error: Unknown command. Enter <help> for help.", 'e');
     } while (command != "quit");

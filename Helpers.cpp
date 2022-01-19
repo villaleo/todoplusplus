@@ -395,4 +395,24 @@ namespace operations {
         else
             log ("Contents loaded from file successfully!", 's');
     } // end loadFromPath
+
+    void set (string &flag, string &argument) {
+        toLower (flag);
+
+        if (flag == "-def-path") {
+            if (!validPathname (argument))
+                log ("Error: Path name contains invalid characters.", 'e');
+
+            variables::defaultPath = argument;
+        }
+        else if (flag == "-def-name") {
+            if (!validFilename (argument))
+                log ("Error: File name contains invalid characters.", 'e');
+
+            variables::defaultName = argument;
+        }
+        else {
+            log ("Error: Invalid flag specified.", 'e');
+        }
+    }
 } // end namespace operations
